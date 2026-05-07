@@ -1,25 +1,25 @@
-'use client'
+'use client';
 
-import Image from 'next/image'
-import Link from 'next/link'
-import {useLocale, useTranslations} from 'next-intl'
-import {Minus, Plus, Trash2, ShoppingBag, ArrowRight} from 'lucide-react'
-import {Button} from '@/components/ui/button'
-import {Separator} from '@/components/ui/separator'
-import {Header} from '@/components/header'
-import {Footer} from '@/components/footer'
-import {useCart} from '@/context/cart-context'
+import Image from 'next/image';
+import Link from 'next/link';
+import {useLocale, useTranslations} from 'next-intl';
+import {Minus, Plus, Trash2, ShoppingBag, ArrowRight} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {Separator} from '@/components/ui/separator';
+import {Header} from '@/components/header';
+import {Footer} from '@/components/footer';
+import {useCart} from '@/context/cart-context';
 
-const SHIPPING_THRESHOLD = 50
-const SHIPPING_COST = 4.99
+const SHIPPING_THRESHOLD = 50;
+const SHIPPING_COST = 4.99;
 
 export default function CartPage() {
-  const {items, removeFromCart, updateQuantity, subtotal} = useCart()
-  const t = useTranslations('cart')
-  const locale = useLocale()
+  const {items, removeFromCart, updateQuantity, subtotal} = useCart();
+  const t = useTranslations('cart');
+  const locale = useLocale();
 
-  const shipping = subtotal >= SHIPPING_THRESHOLD ? 0 : SHIPPING_COST
-  const total = subtotal + shipping
+  const shipping = subtotal >= SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
+  const total = subtotal + shipping;
 
   if (items.length === 0) {
     return (
@@ -35,7 +35,7 @@ export default function CartPage() {
         </div>
         <Footer />
       </main>
-    )
+    );
   }
 
   return (
@@ -48,38 +48,59 @@ export default function CartPage() {
             {items.map(item => (
               <div key={item.id} className="flex gap-4 bg-card border border-border rounded-2xl p-4 items-center">
                 <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-muted flex-shrink-0">
-                  <Image src={item.image} alt={item.name} fill className="object-cover" />
+                  <Image src={item?.image} alt={item.name} fill className="object-cover" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <span className="text-xs font-medium text-muted-foreground">{item.category}</span>
                   <h3 className="font-semibold text-foreground truncate">{item.name}</h3>
                   {item.variant_name && (
                     <p className="text-xs text-muted-foreground">
-                      {item.variant_name}{item.variant_unit && item.variant_unit_value ? ` · ${item.variant_unit_value}${item.variant_unit}` : ''}
+                      {item.variant_name}
+                      {item.variant_unit && item.variant_unit_value
+                        ? ` · ${item.variant_unit_value}${item.variant_unit}`
+                        : ''}
                     </p>
                   )}
                   <p className="text-primary font-bold">${item.price.toFixed(2)}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Button variant="outline" size="icon" className="h-8 w-8 rounded-lg" onClick={() => updateQuantity(item.id, item.quantity - 1)} disabled={item.quantity <= 1}>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8 rounded-lg"
+                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    disabled={item.quantity <= 1}
+                  >
                     <Minus className="h-3 w-3" />
                   </Button>
                   <span className="w-8 text-center font-semibold">{item.quantity}</span>
-                  <Button variant="outline" size="icon" className="h-8 w-8 rounded-lg" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8 rounded-lg"
+                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                  >
                     <Plus className="h-3 w-3" />
                   </Button>
                 </div>
                 <div className="text-right min-w-[70px]">
                   <p className="font-bold text-foreground">${(item.price * item.quantity).toFixed(2)}</p>
                 </div>
-                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive h-8 w-8" onClick={() => removeFromCart(item.id)}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground hover:text-destructive h-8 w-8"
+                  onClick={() => removeFromCart(item.id)}
+                >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
             ))}
             <div className="mt-4">
               <Link href={`/${locale}/products`}>
-                <Button variant="outline" className="rounded-xl">{t('continueShopping')}</Button>
+                <Button variant="outline" className="rounded-xl">
+                  {t('continueShopping')}
+                </Button>
               </Link>
             </div>
           </div>
@@ -89,12 +110,18 @@ export default function CartPage() {
               <h2 className="text-xl font-bold text-foreground mb-6">{t('orderSummary')}</h2>
               <div className="flex flex-col gap-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">{t('subtotal', {count: items.reduce((s, i) => s + i.quantity, 0)})}</span>
+                  <span className="text-muted-foreground">
+                    {t('subtotal', {count: items.reduce((s, i) => s + i.quantity, 0)})}
+                  </span>
                   <span className="font-medium">${subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">{t('shipping')}</span>
-                  {shipping === 0 ? <span className="text-green-600 font-medium">{t('free')}</span> : <span className="font-medium">${shipping.toFixed(2)}</span>}
+                  {shipping === 0 ? (
+                    <span className="text-green-600 font-medium">{t('free')}</span>
+                  ) : (
+                    <span className="font-medium">${shipping.toFixed(2)}</span>
+                  )}
                 </div>
                 {shipping > 0 && (
                   <p className="text-xs text-muted-foreground bg-muted rounded-lg px-3 py-2">
@@ -123,5 +150,5 @@ export default function CartPage() {
       </div>
       <Footer />
     </main>
-  )
+  );
 }

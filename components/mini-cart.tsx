@@ -1,25 +1,33 @@
-'use client'
+'use client';
 
-import Image from 'next/image'
-import Link from 'next/link'
-import {useLocale, useTranslations} from 'next-intl'
-import {Minus, Plus, Trash2, ShoppingBag, ArrowRight, ShoppingCart} from 'lucide-react'
-import {Button} from '@/components/ui/button'
-import {Separator} from '@/components/ui/separator'
-import {Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose, SheetFooter} from '@/components/ui/sheet'
-import {useCart} from '@/context/cart-context'
+import Image from 'next/image';
+import Link from 'next/link';
+import {useLocale, useTranslations} from 'next-intl';
+import {Minus, Plus, Trash2, ShoppingBag, ArrowRight, ShoppingCart} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {Separator} from '@/components/ui/separator';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetClose,
+  SheetFooter,
+} from '@/components/ui/sheet';
+import {useCart} from '@/context/cart-context';
 
-const SHIPPING_THRESHOLD = 50
-const SHIPPING_COST = 5
+const SHIPPING_THRESHOLD = 50;
+const SHIPPING_COST = 5;
 
 export function MiniCart() {
-  const {items, removeFromCart, updateQuantity, itemCount, subtotal} = useCart()
-  const t = useTranslations('miniCart')
-  const locale = useLocale()
+  const {items, removeFromCart, updateQuantity, itemCount, subtotal} = useCart();
+  const t = useTranslations('miniCart');
+  const locale = useLocale();
 
-  const shipping = subtotal >= SHIPPING_THRESHOLD ? 0 : SHIPPING_COST
-  const total = subtotal + shipping
-  const progressPct = Math.min((subtotal / SHIPPING_THRESHOLD) * 100, 100)
+  const shipping = subtotal >= SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
+  const total = subtotal + shipping;
+  const progressPct = Math.min((subtotal / SHIPPING_THRESHOLD) * 100, 100);
 
   return (
     <Sheet>
@@ -71,7 +79,10 @@ export function MiniCart() {
                   {t('freeShippingProgress', {amount: `$${(SHIPPING_THRESHOLD - subtotal).toFixed(2)}`})}
                 </p>
                 <div className="h-1.5 rounded-full bg-muted overflow-hidden">
-                  <div className="h-full rounded-full bg-primary transition-all duration-500" style={{width: `${progressPct}%`}} />
+                  <div
+                    className="h-full rounded-full bg-primary transition-all duration-500"
+                    style={{width: `${progressPct}%`}}
+                  />
                 </div>
               </div>
             )}
@@ -85,28 +96,47 @@ export function MiniCart() {
               {items.map(item => (
                 <div key={item.id} className="flex gap-3 items-start">
                   <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-muted flex-shrink-0">
-                    <Image src={item.image} alt={item.name} fill className="object-cover" />
+                    <Image src={item?.image} alt={item.name} fill className="object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-muted-foreground">{item.category}</p>
                     <p className="text-sm font-semibold text-foreground leading-tight truncate">{item.name}</p>
                     {item.variant_name && (
                       <p className="text-xs text-muted-foreground mt-0.5">
-                        {item.variant_name}{item.variant_unit && item.variant_unit_value ? ` · ${item.variant_unit_value}${item.variant_unit}` : ''}
+                        {item.variant_name}
+                        {item.variant_unit && item.variant_unit_value
+                          ? ` · ${item.variant_unit_value}${item.variant_unit}`
+                          : ''}
                       </p>
                     )}
                     <p className="text-sm font-bold text-primary mt-0.5">${(item.price * item.quantity).toFixed(2)}</p>
                     <div className="flex items-center gap-1.5 mt-2">
-                      <Button variant="outline" size="icon" className="h-6 w-6 rounded-md" onClick={() => updateQuantity(item.id, item.quantity - 1)} disabled={item.quantity <= 1}>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-6 w-6 rounded-md"
+                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        disabled={item.quantity <= 1}
+                      >
                         <Minus className="h-3 w-3" />
                       </Button>
                       <span className="w-6 text-center text-sm font-semibold">{item.quantity}</span>
-                      <Button variant="outline" size="icon" className="h-6 w-6 rounded-md" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-6 w-6 rounded-md"
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      >
                         <Plus className="h-3 w-3" />
                       </Button>
                     </div>
                   </div>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive flex-shrink-0" onClick={() => removeFromCart(item.id)}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 text-muted-foreground hover:text-destructive flex-shrink-0"
+                    onClick={() => removeFromCart(item.id)}
+                  >
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>
                 </div>
@@ -121,7 +151,11 @@ export function MiniCart() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">{t('shipping')}</span>
-                  {shipping === 0 ? <span className="text-green-600 font-medium">{t('free')}</span> : <span className="font-medium">${shipping.toFixed(2)}</span>}
+                  {shipping === 0 ? (
+                    <span className="text-green-600 font-medium">{t('free')}</span>
+                  ) : (
+                    <span className="font-medium">${shipping.toFixed(2)}</span>
+                  )}
                 </div>
                 <Separator />
                 <div className="flex justify-between font-bold text-base text-foreground">
@@ -139,7 +173,9 @@ export function MiniCart() {
               </SheetClose>
               <SheetClose asChild>
                 <Link href={`/${locale}/cart`} className="w-full">
-                  <Button variant="outline" className="w-full rounded-xl">{t('viewCart')}</Button>
+                  <Button variant="outline" className="w-full rounded-xl">
+                    {t('viewCart')}
+                  </Button>
                 </Link>
               </SheetClose>
             </SheetFooter>
@@ -147,5 +183,5 @@ export function MiniCart() {
         )}
       </SheetContent>
     </Sheet>
-  )
+  );
 }

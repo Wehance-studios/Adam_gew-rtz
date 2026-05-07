@@ -170,7 +170,8 @@
     "clearFilters": "مسح الفلاتر",
     "loadMore": "تحميل المزيد",
     "loading": "جارٍ التحميل…",
-    "allLoaded": "تم تحميل جميع المنتجات ({count})"
+    "allLoaded": "تم تحميل جميع المنتجات ({count})",
+    "filters": "الفلاتر"
   },
   "storyPage": {
     "label": "قصتنا",

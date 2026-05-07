@@ -170,7 +170,8 @@
     "clearFilters": "Filter zurücksetzen",
     "loadMore": "Mehr laden",
     "loading": "Lädt…",
-    "allLoaded": "Alle {count} Produkte geladen"
+    "allLoaded": "Alle {count} Produkte geladen",
+    "filters": "Filter"
   },
   "storyPage": {
     "label": "Unsere Geschichte",

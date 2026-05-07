@@ -48,8 +48,8 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [addedIds, setAddedIds] = useState<Set<string>>(new Set());
-  // tracks the selected variant id per menu item
   const [selectedVariants, setSelectedVariants] = useState<Record<string, ProductVariant>>({});
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Debounce search → hits Supabase only after user stops typing
@@ -187,6 +187,11 @@ export default function ProductsPage() {
     setActiveCategoryId('all');
   }
 
+  function setCategory(id: string) {
+    setActiveCategoryId(id);
+    setSidebarOpen(false);
+  }
+
   return (
     <main className="min-h-screen">
       <Header />
@@ -207,6 +212,15 @@ export default function ProductsPage() {
       <div className="container mx-auto px-4 lg:px-8 py-8">
         {/* Toolbar */}
         <div className="flex gap-3 mb-6">
+          {/* Mobile filter button */}
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="lg:hidden flex items-center gap-2 px-4 py-2 rounded-xl border border-border text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors flex-shrink-0"
+          >
+            <SlidersHorizontal className="h-4 w-4" />
+            {t('filters')}
+          </button>
+
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
             <Input
@@ -226,7 +240,7 @@ export default function ProductsPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <SlidersHorizontal className="h-4 w-4 text-muted-foreground flex-shrink-0 hidden sm:block" />
+            <SlidersHorizontal className="h-4 w-4 text-muted-foreground flex-shrink-0 hidden lg:block" />
             <Select value={sort} onValueChange={v => setSort(v as SortOption)}>
               <SelectTrigger className="w-44 rounded-xl">
                 <SelectValue />
@@ -242,9 +256,81 @@ export default function ProductsPage() {
           </div>
         </div>
 
+        {/* ── Mobile sidebar drawer ── */}
+        <div
+          className={`fixed inset-0 bg-black/40 z-40 lg:hidden transition-opacity duration-300 ${
+            sidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
+          onClick={() => setSidebarOpen(false)}
+        />
+        <aside
+          className={`fixed inset-y-0 left-0 z-50 w-72 bg-background overflow-y-auto lg:hidden shadow-2xl transition-transform duration-300 ease-in-out ${
+            sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+            <span className="text-sm font-semibold text-foreground">{t('filters')}</span>
+            <button onClick={() => setSidebarOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+          <div className="overflow-hidden">
+            <div className="bg-primary px-5 py-4">
+              <p className="text-[10px] font-semibold text-primary-foreground/60 uppercase tracking-[0.18em] mb-0.5 text-start">
+                {t('all')}
+              </p>
+              <h3 className="text-base font-bold text-primary-foreground text-start leading-tight">
+                {categories.find(c => c.id === activeCategoryId)?.name ||
+                  categories.find(c => c.id === activeCategoryId)?.alt_name ||
+                  t('all')}
+              </h3>
+            </div>
+            <nav className="bg-card flex flex-col divide-y divide-border">
+              <button
+                onClick={() => setCategory('all')}
+                className={`group flex items-center justify-between w-full px-5 py-3.5 text-sm font-medium transition-all duration-200 text-start ${
+                  activeCategoryId === 'all' ? 'bg-primary/8 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                }`}
+              >
+                <span className="text-start">{t('all')}</span>
+                {activeCategoryId === 'all' ? (
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+                ) : (
+                  <ChevronRight className="h-3.5 w-3.5 flex-shrink-0 opacity-0 group-hover:opacity-40 rtl:rotate-180 transition-opacity" />
+                )}
+              </button>
+              {categories.map(cat => (
+                <button
+                  key={cat.id}
+                  onClick={() => setCategory(cat.id)}
+                  className={`group flex items-center justify-between w-full px-5 py-3.5 text-sm font-medium transition-all duration-200 ${
+                    activeCategoryId === cat.id ? 'bg-primary/8 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  }`}
+                >
+                  <span className="text-start">{locale == 'de' ? cat.name : cat.alt_name}</span>
+                  {activeCategoryId === cat.id ? (
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+                  ) : (
+                    <ChevronRight className="h-3.5 w-3.5 flex-shrink-0 opacity-0 group-hover:opacity-40 rtl:rotate-180 transition-opacity" />
+                  )}
+                </button>
+              ))}
+            </nav>
+            {hasFilters && (
+              <button
+                onClick={() => { clearFilters(); setSidebarOpen(false); }}
+                className="w-full flex items-center justify-center gap-1.5 px-5 py-3 text-xs font-medium text-muted-foreground hover:text-destructive bg-muted/50 border-t border-border transition-colors"
+              >
+                <X className="h-3 w-3" />
+                {t('clear')}
+              </button>
+            )}
+          </div>
+        </aside>
+
         <div className="flex gap-8 items-start">
-          {/* ── Sidebar ── */}
-          <aside className="w-64 flex-shrink-0">
+          {/* ── Desktop sidebar ── */}
+          <aside className="hidden lg:block w-64 flex-shrink-0">
             <div className="sticky top-24 rounded-2xl overflow-hidden border border-border shadow-sm">
               {/* Header strip */}
               <div className="bg-primary px-5 py-4">
@@ -260,7 +346,6 @@ export default function ProductsPage() {
 
               {/* Category list */}
               <nav className="bg-card flex flex-col divide-y divide-border">
-                {/* All */}
                 <button
                   onClick={() => setActiveCategoryId('all')}
                   className={`group flex items-center justify-between w-full px-5 py-3.5 text-sm font-medium transition-all duration-200 text-start ${
@@ -277,7 +362,7 @@ export default function ProductsPage() {
                   )}
                 </button>
 
-                {categories.map((cat, i) => (
+                {categories.map(cat => (
                   <button
                     key={cat.id}
                     onClick={() => setActiveCategoryId(cat.id)}

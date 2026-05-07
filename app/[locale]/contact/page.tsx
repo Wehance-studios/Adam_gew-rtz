@@ -42,10 +42,14 @@ export default function ContactPage() {
   return (
     <main className="min-h-screen">
       <Header />
-      <div className="bg-card border-b border-border py-10 lg:py-14">
-        <div className="container mx-auto px-4 lg:px-8">
-          <h1 className="text-3xl lg:text-4xl font-bold text-foreground tracking-tight">{t('title')}</h1>
-          <p className="mt-2 text-muted-foreground max-w-xl">{t('subtitle')}</p>
+      <div
+        className="relative border-b border-border py-16 lg:py-24 overflow-hidden"
+        style={{backgroundImage: 'url(/images/hero-spices.jpg)', backgroundSize: 'cover', backgroundPosition: 'center'}}
+      >
+        <div className="absolute inset-0 bg-black/55" />
+        <div className="relative container mx-auto px-4 lg:px-8">
+          <h1 className="text-3xl lg:text-4xl font-bold text-white tracking-tight">{t('title')}</h1>
+          <p className="mt-2 text-white/75 max-w-xl">{t('subtitle')}</p>
         </div>
       </div>
 

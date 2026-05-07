@@ -3,7 +3,7 @@
 import {useState, useEffect, useCallback, useRef} from 'react';
 import {useSearchParams} from 'next/navigation';
 import {useTranslations} from 'next-intl';
-import {Search, X, Loader2, SlidersHorizontal} from 'lucide-react';
+import {Search, X, Loader2, SlidersHorizontal, ChevronRight} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Skeleton} from '@/components/ui/skeleton';
@@ -13,6 +13,7 @@ import {Footer} from '@/components/footer';
 import {ProductCard} from '@/components/product-card';
 import {useCart} from '@/context/cart-context';
 import {supabase, type MenuItem, type MenuCategory, type ProductVariant} from '@/lib/supabase';
+import {useLocale} from 'next-intl';
 
 const PAGE_SIZE = 10;
 
@@ -24,6 +25,7 @@ function defaultVariant(variants: ProductVariant[]): ProductVariant | null {
 }
 
 export default function ProductsPage() {
+  let locale = useLocale();
   const {addToCart} = useCart();
   const t = useTranslations('shop');
   const searchParams = useSearchParams();
@@ -190,16 +192,21 @@ export default function ProductsPage() {
       <Header />
 
       {/* Page Hero */}
-      <div className="bg-card border-b border-border py-10 lg:py-14">
-        <div className="container mx-auto px-4 lg:px-8">
-          <h1 className="text-3xl lg:text-4xl font-bold text-foreground tracking-tight">{t('title')}</h1>
-          <p className="mt-2 text-muted-foreground max-w-xl">{t('subtitle')}</p>
+      <div
+        className="relative border-b border-border py-16 lg:py-24 overflow-hidden"
+        style={{backgroundImage: 'url(/images/hero-spices.jpg)', backgroundSize: 'cover', backgroundPosition: 'center'}}
+      >
+        {/* dark scrim so text is legible */}
+        <div className="absolute inset-0 bg-black/55" />
+        <div className="relative container mx-auto px-4 lg:px-8">
+          <h1 className="text-3xl lg:text-4xl font-bold text-white tracking-tight">{t('title')}</h1>
+          <p className="mt-2 text-white/75 max-w-xl">{t('subtitle')}</p>
         </div>
       </div>
 
       <div className="container mx-auto px-4 lg:px-8 py-8">
         {/* Toolbar */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <div className="flex gap-3 mb-6">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
             <Input
@@ -219,9 +226,9 @@ export default function ProductsPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <SlidersHorizontal className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <SlidersHorizontal className="h-4 w-4 text-muted-foreground flex-shrink-0 hidden sm:block" />
             <Select value={sort} onValueChange={v => setSort(v as SortOption)}>
-              <SelectTrigger className="w-48 rounded-xl">
+              <SelectTrigger className="w-44 rounded-xl">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -235,116 +242,154 @@ export default function ProductsPage() {
           </div>
         </div>
 
-        {/* Category Pills */}
-        <div className="flex items-center gap-2 flex-wrap mb-8">
-          <button
-            onClick={() => setActiveCategoryId('all')}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-              activeCategoryId === 'all'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground'
-            }`}
-          >
-            All
-          </button>
-          {categories.map(cat => (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategoryId(cat.id)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-                activeCategoryId === cat.id
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground'
-              }`}
-            >
-              {cat.name}
-            </button>
-          ))}
-          {hasFilters && (
-            <button
-              onClick={clearFilters}
-              className="px-3 py-1.5 rounded-full text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-1 underline underline-offset-2"
-            >
-              <X className="h-3 w-3" />
-              Clear
-            </button>
-          )}
-        </div>
-
-        {/* Loading skeleton */}
-        {loading && (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {Array.from({length: PAGE_SIZE}).map((_, i) => (
-              <div key={i} className="rounded-2xl border border-border overflow-hidden">
-                <Skeleton className="aspect-square w-full" />
-                <div className="p-5 flex flex-col gap-2">
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-3 w-full" />
-                  <Skeleton className="h-3 w-2/3" />
-                  <Skeleton className="h-8 w-full mt-1" />
-                  <Skeleton className="h-9 w-full mt-1" />
-                </div>
+        <div className="flex gap-8 items-start">
+          {/* ── Sidebar ── */}
+          <aside className="w-64 flex-shrink-0">
+            <div className="sticky top-24 rounded-2xl overflow-hidden border border-border shadow-sm">
+              {/* Header strip */}
+              <div className="bg-primary px-5 py-4">
+                <p className="text-[10px] font-semibold text-primary-foreground/60 uppercase tracking-[0.18em] mb-0.5 text-start">
+                  {t('all')}
+                </p>
+                <h3 className="text-base font-bold text-primary-foreground text-start leading-tight">
+                  {categories.find(c => c.id === activeCategoryId)?.name ||
+                    categories.find(c => c.id === activeCategoryId)?.alt_name ||
+                    t('all')}
+                </h3>
               </div>
-            ))}
-          </div>
-        )}
 
-        {/* Empty state */}
-        {!loading && items.length === 0 && (
-          <div className="py-24 flex flex-col items-center gap-4 text-center">
-            <p className="text-lg font-semibold text-foreground">{t('noProducts')}</p>
-            <p className="text-sm text-muted-foreground">{t('noProductsDesc')}</p>
-            {hasFilters && (
-              <Button variant="outline" onClick={clearFilters} className="mt-2 rounded-xl">
-                {t('clearFilters')}
-              </Button>
-            )}
-          </div>
-        )}
-
-        {/* Product grid */}
-        {!loading && items.length > 0 && (
-          <>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {items.map(item => (
-                <ProductCard
-                  key={item.id}
-                  item={item}
-                  selected={selectedVariants[item.id] ?? null}
-                  isAdded={addedIds.has(item.id)}
-                  onSelectVariant={variant => selectVariant(item.id, variant)}
-                  onAddToCart={() => handleAddToCart(item)}
-                />
-              ))}
-            </div>
-
-            {/* Load More */}
-            {hasMore && (
-              <div className="mt-10 flex justify-center">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={handleLoadMore}
-                  disabled={loadingMore}
-                  className="px-10 py-6 rounded-xl text-base font-semibold"
+              {/* Category list */}
+              <nav className="bg-card flex flex-col divide-y divide-border">
+                {/* All */}
+                <button
+                  onClick={() => setActiveCategoryId('all')}
+                  className={`group flex items-center justify-between w-full px-5 py-3.5 text-sm font-medium transition-all duration-200 text-start ${
+                    activeCategoryId === 'all'
+                      ? 'bg-primary/8 text-primary'
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  }`}
                 >
-                  {loadingMore ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      {t('loading')}
-                    </>
+                  <span className="text-start">{t('all')}</span>
+                  {activeCategoryId === 'all' ? (
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
                   ) : (
-                    t('loadMore')
+                    <ChevronRight className="h-3.5 w-3.5 flex-shrink-0 opacity-0 group-hover:opacity-40 rtl:rotate-180 transition-opacity" />
                   )}
-                </Button>
+                </button>
+
+                {categories.map((cat, i) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setActiveCategoryId(cat.id)}
+                    className={`group flex items-center justify-between w-full px-5 py-3.5 text-sm font-medium transition-all duration-200 ${
+                      activeCategoryId === cat.id
+                        ? 'bg-primary/8 text-primary'
+                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                    }`}
+                  >
+                    <span className="text-start">{locale == 'de' ? cat.name : cat.alt_name}</span>
+                    {activeCategoryId === cat.id ? (
+                      <span className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+                    ) : (
+                      <ChevronRight className="h-3.5 w-3.5 flex-shrink-0 opacity-0 group-hover:opacity-40 rtl:rotate-180 transition-opacity" />
+                    )}
+                  </button>
+                ))}
+              </nav>
+
+              {/* Clear filters footer */}
+              {hasFilters && (
+                <button
+                  onClick={clearFilters}
+                  className="w-full flex items-center justify-center gap-1.5 px-5 py-3 text-xs font-medium text-muted-foreground hover:text-destructive bg-muted/50 border-t border-border transition-colors"
+                >
+                  <X className="h-3 w-3" />
+                  {t('clear')}
+                </button>
+              )}
+            </div>
+          </aside>
+
+          {/* ── Main content ── */}
+          <div className="flex-1 min-w-0">
+            {/* Loading skeleton */}
+            {loading && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.from({length: PAGE_SIZE}).map((_, i) => (
+                  <div key={i} className="rounded-2xl border border-border overflow-hidden">
+                    <Skeleton className="aspect-square w-full" />
+                    <div className="p-5 flex flex-col gap-2">
+                      <Skeleton className="h-4 w-3/4" />
+                      <Skeleton className="h-3 w-full" />
+                      <Skeleton className="h-3 w-2/3" />
+                      <Skeleton className="h-8 w-full mt-1" />
+                      <Skeleton className="h-9 w-full mt-1" />
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
 
-            {!hasMore && items.length > PAGE_SIZE && (
-              <p className="mt-10 text-center text-sm text-muted-foreground">{t('allLoaded', {count: items.length})}</p>
+            {/* Empty state */}
+            {!loading && items.length === 0 && (
+              <div className="py-24 flex flex-col items-center gap-4 text-center">
+                <p className="text-lg font-semibold text-foreground">{t('noProducts')}</p>
+                <p className="text-sm text-muted-foreground">{t('noProductsDesc')}</p>
+                {hasFilters && (
+                  <Button variant="outline" onClick={clearFilters} className="mt-2 rounded-xl">
+                    {t('clearFilters')}
+                  </Button>
+                )}
+              </div>
             )}
-          </>
-        )}
+
+            {/* Product grid */}
+            {!loading && items.length > 0 && (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {items.map(item => (
+                    <ProductCard
+                      key={item.id}
+                      item={item}
+                      selected={selectedVariants[item.id] ?? null}
+                      isAdded={addedIds.has(item.id)}
+                      onSelectVariant={variant => selectVariant(item.id, variant)}
+                      onAddToCart={() => handleAddToCart(item)}
+                    />
+                  ))}
+                </div>
+
+                {/* Load More */}
+                {hasMore && (
+                  <div className="mt-10 flex justify-center">
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      onClick={handleLoadMore}
+                      disabled={loadingMore}
+                      className="px-10 py-6 rounded-xl text-base font-semibold"
+                    >
+                      {loadingMore ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          {t('loading')}
+                        </>
+                      ) : (
+                        t('loadMore')
+                      )}
+                    </Button>
+                  </div>
+                )}
+
+                {!hasMore && items.length > PAGE_SIZE && (
+                  <p className="mt-10 text-center text-sm text-muted-foreground">
+                    {t('allLoaded', {count: items.length})}
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+        </div>
       </div>
 
       <Footer />

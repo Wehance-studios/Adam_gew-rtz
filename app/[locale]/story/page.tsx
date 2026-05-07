@@ -20,11 +20,15 @@ export default function StoryPage() {
     <main className="min-h-screen">
       <Header />
 
-      <section className="relative bg-card border-b border-border overflow-hidden">
-        <div className="container mx-auto px-4 lg:px-8 py-20 lg:py-28 max-w-3xl">
+      <section
+        className="relative border-b border-border overflow-hidden"
+        style={{backgroundImage: 'url(/images/hero-spices.jpg)', backgroundSize: 'cover', backgroundPosition: 'center'}}
+      >
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="relative container mx-auto px-4 lg:px-8 py-20 lg:py-28 max-w-3xl">
           <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-4">{t('label')}</p>
-          <h1 className="text-4xl lg:text-5xl font-bold text-foreground tracking-tight leading-tight">{t('heroTitle')}</h1>
-          <p className="mt-6 text-lg text-muted-foreground leading-relaxed">{t('heroSubtitle')}</p>
+          <h1 className="text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">{t('heroTitle')}</h1>
+          <p className="mt-6 text-lg text-white/75 leading-relaxed">{t('heroSubtitle')}</p>
         </div>
       </section>
 

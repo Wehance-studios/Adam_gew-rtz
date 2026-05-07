@@ -41,6 +41,8 @@ export type MenuCategory = {
   id: string;
   restaurant_id: string;
   name: string;
+  img_url: string;
+  alt_name: string;
   sort_order: number;
   description: string;
   is_active: boolean;

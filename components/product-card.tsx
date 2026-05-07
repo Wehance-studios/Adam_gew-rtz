@@ -5,7 +5,7 @@ import {useTranslations} from 'next-intl';
 import {ShoppingBag} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {type MenuItem, type ProductVariant} from '@/lib/supabase';
-
+import {useLocale} from 'next-intl';
 type Props = {
   item: MenuItem;
   selected: ProductVariant | null;
@@ -18,7 +18,7 @@ export function ProductCard({item, selected, isAdded, onSelectVariant, onAddToCa
   const t = useTranslations('products');
   const activeVariants = (item.product_variants ?? []).filter(v => v.is_active);
   const price = selected ? (selected.unit_price ?? selected.price ?? item.price) : item.price;
-
+  const locale = useLocale();
   return (
     <div className="group bg-card rounded-2xl overflow-hidden border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-xl flex flex-col">
       <div className="relative aspect-square overflow-hidden bg-muted">
@@ -42,9 +42,11 @@ export function ProductCard({item, selected, isAdded, onSelectVariant, onAddToCa
       </div>
 
       <div className="p-5 flex flex-col flex-1">
-        <h3 className="text-base font-semibold text-foreground mb-1 leading-snug">{item.name}</h3>
+        <h3 className="text-base font-semibold text-foreground mb-1 leading-snug">
+          {locale === 'de' ? item.name : item.alt_name}
+        </h3>
         {item.description && (
-          <p className="text-xs text-muted-foreground leading-relaxed flex-1 mb-3 line-clamp-2">{item.description}</p>
+          <p className="text-xs text-muted-foreground leading-relaxed mb-3 line-clamp-2">{item.description}</p>
         )}
 
         {activeVariants.length > 0 && (
@@ -60,25 +62,25 @@ export function ProductCard({item, selected, isAdded, onSelectVariant, onAddToCa
                 }`}
               >
                 {v.name}
-                {/* {v.unit && v.unit_value ? ` · ${v.unit_value}` : ''} */}
               </button>
             ))}
           </div>
         )}
 
-        <p className="text-xl font-bold text-primary mb-4">${price.toFixed(2)}</p>
-
-        <Button
-          onClick={onAddToCart}
-          className={`w-full rounded-xl font-medium transition-all ${
-            isAdded
-              ? 'bg-green-600 hover:bg-green-600 text-white'
-              : 'bg-primary hover:bg-primary/90 text-primary-foreground'
-          }`}
-        >
-          <ShoppingBag className="w-4 h-4 mr-2" />
-          {isAdded ? t('added') : t('addToCart')}
-        </Button>
+        <div className="mt-auto pt-3">
+          <p className="text-xl font-bold text-primary mb-3">${price.toFixed(2)}</p>
+          <Button
+            onClick={onAddToCart}
+            className={`w-full rounded-xl font-medium transition-all ${
+              isAdded
+                ? 'bg-green-600 hover:bg-green-600 text-white'
+                : 'bg-primary hover:bg-primary/90 text-primary-foreground'
+            }`}
+          >
+            <ShoppingBag className="w-4 h-4 mr-2" />
+            {isAdded ? t('added') : t('addToCart')}
+          </Button>
+        </div>
       </div>
     </div>
   );

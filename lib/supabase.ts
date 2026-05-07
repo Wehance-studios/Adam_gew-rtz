@@ -33,7 +33,7 @@ export type MenuItem = {
   price: number;
   image_url: string;
   is_available: boolean;
-  menu_categories: {name: string} | null;
+  menu_categories: {name: string; alt_name: string} | null;
   product_variants: ProductVariant[];
 };
 

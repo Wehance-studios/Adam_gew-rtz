@@ -36,7 +36,7 @@ export function ProductCard({item, selected, isAdded, onSelectVariant, onAddToCa
         )}
         {item.menu_categories?.name && (
           <span className="absolute top-3 left-3 px-2.5 py-1 text-xs font-medium bg-background/90 backdrop-blur-sm rounded-full text-foreground">
-            {item.menu_categories.name}
+            {locale === 'de' ? item.menu_categories.name : item.menu_categories.alt_name}
           </span>
         )}
       </div>

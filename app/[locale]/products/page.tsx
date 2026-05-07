@@ -81,7 +81,7 @@ export default function ProductsPage() {
 
       let query = supabase
         .from('menu_items')
-        .select('*, alt_name,menu_categories(name), product_variants(*)', {count: 'exact'})
+        .select('*, alt_name,menu_categories(name, alt_name), product_variants(*)', {count: 'exact'})
         .eq('is_available', true);
 
       if (activeCategoryId !== 'all') {
@@ -270,7 +270,10 @@ export default function ProductsPage() {
         >
           <div className="flex items-center justify-between px-5 py-4 border-b border-border">
             <span className="text-sm font-semibold text-foreground">{t('filters')}</span>
-            <button onClick={() => setSidebarOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors">
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
               <X className="h-5 w-5" />
             </button>
           </div>
@@ -289,7 +292,9 @@ export default function ProductsPage() {
               <button
                 onClick={() => setCategory('all')}
                 className={`group flex items-center justify-between w-full px-5 py-3.5 text-sm font-medium transition-all duration-200 text-start ${
-                  activeCategoryId === 'all' ? 'bg-primary/8 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  activeCategoryId === 'all'
+                    ? 'bg-primary/8 text-primary'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
                 <span className="text-start">{t('all')}</span>
@@ -304,7 +309,9 @@ export default function ProductsPage() {
                   key={cat.id}
                   onClick={() => setCategory(cat.id)}
                   className={`group flex items-center justify-between w-full px-5 py-3.5 text-sm font-medium transition-all duration-200 ${
-                    activeCategoryId === cat.id ? 'bg-primary/8 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                    activeCategoryId === cat.id
+                      ? 'bg-primary/8 text-primary'
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                   }`}
                 >
                   <span className="text-start">{locale == 'de' ? cat.name : cat.alt_name}</span>
@@ -318,7 +325,10 @@ export default function ProductsPage() {
             </nav>
             {hasFilters && (
               <button
-                onClick={() => { clearFilters(); setSidebarOpen(false); }}
+                onClick={() => {
+                  clearFilters();
+                  setSidebarOpen(false);
+                }}
                 className="w-full flex items-center justify-center gap-1.5 px-5 py-3 text-xs font-medium text-muted-foreground hover:text-destructive bg-muted/50 border-t border-border transition-colors"
               >
                 <X className="h-3 w-3" />

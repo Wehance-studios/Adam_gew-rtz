@@ -16,10 +16,19 @@
     "title": "Warum wir?",
     "subtitle": "Wir glauben daran, Ihnen die reinsten und aromatischsten Gewürze direkt von der Quelle zu bringen.",
     "items": {
-      "natural": { "title": "100 % Natürlich", "desc": "Reine Zutaten ohne künstliche Zusatz- oder Konservierungsstoffe" },
-      "packed": { "title": "Frisch verpackt", "desc": "Versiegelt auf dem Höhepunkt der Frische, um Geschmack und Aroma zu bewahren" },
-      "noAdditives": { "title": "Keine Zusätze", "desc": "Frei von Füllstoffen, Farbstoffen und künstlichen Verstärkern" },
-      "premium": { "title": "Premiumqualität", "desc": "Handverlesen aus den besten Farmen der Welt" }
+      "natural": {
+        "title": "100 % Natürlich",
+        "desc": "Reine Zutaten ohne künstliche Zusatz- oder Konservierungsstoffe"
+      },
+      "packed": {
+        "title": "Frisch verpackt",
+        "desc": "Versiegelt auf dem Höhepunkt der Frische, um Geschmack und Aroma zu bewahren"
+      },
+      "noAdditives": {
+        "title": "Keine Zusätze",
+        "desc": "Frei von Füllstoffen, Farbstoffen und künstlichen Verstärkern"
+      },
+      "premium": {"title": "Premiumqualität", "desc": "Handverlesen aus den besten Farmen der Welt"}
     }
   },
   "products": {
@@ -69,7 +78,8 @@
       "faq": "FAQ",
       "shipping": "Versand",
       "returns": "Rücksendungen",
-      "trackOrder": "Bestellung verfolgen"
+      "trackOrder": "Bestellung verfolgen",
+      "slug": "Reine Gewürze. Authentischer Geschmack"
     },
     "copyright": "Alle Rechte vorbehalten.",
     "privacy": "Datenschutz",
@@ -176,18 +186,30 @@
   "storyPage": {
     "label": "Unsere Geschichte",
     "heroTitle": "Geschmack beginnt an der Quelle.",
-    "heroSubtitle": "Earthy Spice Co. wurde aus einer einfachen Frustration geboren: die Gewürze in Supermarktregalen schmecken nach nichts. Wir wussten, dass es besser geht – und haben es bewiesen.",
-    "founderTitle": "Adam Gewürtz, Gründer",
+    "heroSubtitle": "Adam Gewürz wurde aus einer einfachen Frustration geboren: die Gewürze in Supermarktregalen schmecken nach nichts. Wir wussten, dass es besser geht – und haben es bewiesen.",
+    "founderTitle": "Adam Gewürz, Gründer",
     "founderP1": "Aufgewachsen zwischen Stuttgart und Istanbul entwickelte Adam eine Obsession dafür, wie ein einziges Gewürz ein Gericht verwandeln kann.",
     "founderP2": "Nach einem Jahrzehnt in der Lebensmittelbranche kündigte er seinen Konzernjob, buchte ein Einwegticket nach Sansibar und verbrachte sechs Monate auf Gewürzfarmen.",
     "founderP3": "Heute arbeitet das Unternehmen mit über 30 Farmpartnern in 12 Ländern zusammen.",
     "valuesTitle": "Wofür wir stehen",
     "valuesSubtitle": "Vier Grundsätze, die jede unserer Entscheidungen leiten.",
     "values": {
-      "sustainable": { "title": "Nachhaltig bezogen", "body": "Wir arbeiten direkt mit Landwirten zusammen, die regenerative Praktiken anwenden." },
-      "quality": { "title": "Kompromisslose Qualität", "body": "Jede Charge wird auf Reinheit, Potenz und Frische getestet." },
-      "global": { "title": "Globale Partnerschaften", "body": "Von den Safranfeldern Kaschmirs bis zu den Pfefferranken Keralas." },
-      "community": { "title": "Gemeinschaft zuerst", "body": "Faire Löhne und langfristige Verträge mit unseren Farmpartnern sind für uns nicht verhandelbar." }
+      "sustainable": {
+        "title": "Nachhaltig bezogen",
+        "body": "Wir arbeiten direkt mit Landwirten zusammen, die regenerative Praktiken anwenden."
+      },
+      "quality": {
+        "title": "Kompromisslose Qualität",
+        "body": "Jede Charge wird auf Reinheit, Potenz und Frische getestet."
+      },
+      "global": {
+        "title": "Globale Partnerschaften",
+        "body": "Von den Safranfeldern Kaschmirs bis zu den Pfefferranken Keralas."
+      },
+      "community": {
+        "title": "Gemeinschaft zuerst",
+        "body": "Faire Löhne und langfristige Verträge mit unseren Farmpartnern sind für uns nicht verhandelbar."
+      }
     },
     "timelineTitle": "Ein Jahrzehnt im Entstehen",
     "milestones": {

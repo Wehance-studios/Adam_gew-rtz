@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Earthy Spice Co. | Pure Spices. Real Flavor.',
+  title: 'Adam Gewürz. | Reine Gewürze. Authentischer Geschmack.',
   description:
     'Premium natural spices, herbs, and blends sourced from the finest farms. Experience authentic flavor in every dish.',
   icons: {
